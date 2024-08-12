@@ -1,17 +1,11 @@
 import { useState } from "react";
-import {
-  Form,
-  json,
-  redirect,
-  useActionData,
-  useNavigation,
-} from "react-router-dom";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
-    str
+    str,
   );
 
 const fakeCart = [
@@ -38,7 +32,7 @@ const fakeCart = [
   },
 ];
 
-function CreateOrder() {
+export default function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -65,7 +59,7 @@ function CreateOrder() {
           <div>
             <input type="tel" name="phone" required />
           </div>
-          {formErrors.errors?.phone && <p>{formErrors.errors.phone}</p>}
+          {formErrors?.errors?.phone && <p>{formErrors.errors.phone}</p>}
         </div>
 
         <div>
@@ -89,7 +83,12 @@ function CreateOrder() {
         <input type="hidden" value={JSON.stringify(cart)} name="cart" />
 
         <div>
-          <button disabled={isSubmitting}>Order now</button>
+          <button
+            className="inline-block rounded-full bg-yellow-400 px-4 py-3 font-semibold uppercase tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            Order now
+          </button>
         </div>
       </Form>
     </div>
@@ -125,5 +124,3 @@ export async function action({ request }) {
 
   return redirect(`/order/${newOrder.id}`);
 }
-
-export default CreateOrder;
