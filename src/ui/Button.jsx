@@ -17,7 +17,11 @@ function Button({ children, disabled, to, onClick, type }) {
     );
   }
   if (onClick) {
-    return <button onClick={onClick}>{children}</button>;
+    return (
+      <button onClick={onClick} className={styles[type]}>
+        {children}
+      </button>
+    );
   }
   return (
     <button className={styles[type]} disabled={disabled}>
