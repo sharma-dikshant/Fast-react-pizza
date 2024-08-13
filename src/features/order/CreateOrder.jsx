@@ -3,36 +3,15 @@ import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
 import { useSelector } from "react-redux";
+import { clearCart, getCart } from "../cart/cartSlice";
+import EmptyCart from "../cart/EmptyCart";
+import store from "../../store";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
     str,
   );
-
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
 
 export default function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
@@ -44,7 +23,10 @@ export default function CreateOrder() {
   const formErrors = useActionData();
   console.log(formErrors);
 
-  const cart = fakeCart;
+  const cart = useSelector(getCart);
+  console.log("Cart", cart);
+
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div>
@@ -127,6 +109,9 @@ export async function action({ request }) {
   }
 
   const newOrder = await createOrder(order);
+
+  // DO NOT OVER USE IT
+  store.dispatch(clearCart());
 
   return redirect(`/order/${newOrder.id}`);
 }
